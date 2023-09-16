@@ -1,0 +1,13 @@
+{
+    "author": "Hanbyul Kang",
+    "scripts": {
+        "dev": "node dist/main.js"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^6.7.0",
+        "@typescript-eslint/parser": "^6.7.0",
+        "eslint": "^8.49.0",
+        "typescript": "^5.2.2"
+    },
+    "dependencies": {}
+}

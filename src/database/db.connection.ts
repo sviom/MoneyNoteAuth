@@ -8,14 +8,28 @@ export default class DBService {
             server: 'your_server.database.windows.net', // better stored in an app setting such as process.env.DB_SERVER
             port: 1433, // optional, defaults to 1433, better stored in an app setting such as process.env.DB_PORT
             database: 'AdventureWorksLT', // better stored in an app setting such as process.env.DB_NAME
-            authentication: {
-                type: 'default',
-            },
             options: {
                 encrypt: true,
             },
         };
+        // authentication: {
+        //     type: 'default',
+        // },
 
-        await sql.connect(config);
+        const connection = await sql.connect(config);
+
+        return connection;
+    }
+
+    async query() {
+        try {
+            const connection = await this.connect();
+
+            connection.request().query('');
+
+            await connection.close();
+        } catch (err) {
+            console.error('db query error : ', err);
+        }
     }
 }

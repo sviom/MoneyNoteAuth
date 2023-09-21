@@ -21,11 +21,11 @@ export default class DBService {
         return connection;
     }
 
-    async query() {
+    async query(query: string) {
         try {
             const connection = await this.connect();
 
-            connection.request().query('');
+            connection.request().query(query);
 
             await connection.close();
         } catch (err) {

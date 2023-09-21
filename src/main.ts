@@ -11,5 +11,5 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api', new Controller().router);
 
 app.listen(port, () => {
-    console.log('app listen ');
+    console.log(`app listen, and port is : ${port} `);
 });

@@ -1,3 +1,8 @@
+// import 'dotenv/config';
+import config from 'dotenv';
+config.config();
+console.log('tes');
+
 import express, { Request, Response } from 'express';
 import Controller from './controller';
 

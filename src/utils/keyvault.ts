@@ -11,9 +11,11 @@ const getConnectionString = async () => {
 
     // const keyVaultName = process.env['KEY_VAULT_NAME'];
     // if (!keyVaultName) throw new Error('KEY_VAULT_NAME is empty');
-    const url = 'https://moneynotevault.vault.azure.net/'; // 'https://' + keyVaultName + '.vault.azure.net';
+    //const url = 'https://moneynotevault.vault.azure.net/'; // 'https://' + keyVaultName + '.vault.azure.net';
 
-    const client = new SecretClient(url, credential);
+    const test = process.env.KEYVAULT_URI as string;
+    console.log('test');
+    const client = new SecretClient(test, credential);
 
     // Create a secret
     // The secret can be a string of any kind. For example,

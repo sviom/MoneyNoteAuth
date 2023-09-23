@@ -1,4 +1,4 @@
-import DBService from 'src/database/db.connection';
+import DBService from '@src/database/db.connection';
 
 export default class AuthService {
     setAuthCode() {

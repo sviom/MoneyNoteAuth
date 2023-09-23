@@ -1,3 +1,4 @@
+import AuthService from '@src/service/auth.service';
 import express, { Router, Request, Response } from 'express';
 
 export default class AuthController {
@@ -8,9 +9,17 @@ export default class AuthController {
     }
 
     getTestMessage(req: Request, res: Response) {
-        const query = req.query.test as string;
-        console.log('test : ', query);
+        try {
+            const query = req.query.test as string;
+            console.log('test : ', query);
 
-        res.status(200).json({ test: 'test message' });
+            const service = new AuthService();
+            service.setAuthCode();
+
+            res.status(200).json({ test: 'test message' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).end();
+        }
     }
 }

@@ -1,4 +1,5 @@
 import sql, { type config } from 'mssql';
+import { getConnectionString } from '@src/utils/keyvault';
 
 export default class DBService {
     async connect() {
@@ -23,11 +24,14 @@ export default class DBService {
 
     async query(query: string) {
         try {
-            const connection = await this.connect();
+            console.log(query);
 
-            connection.request().query(query);
+            await getConnectionString();
+            // const connection = await this.connect();
 
-            await connection.close();
+            // connection.request().query(query);
+
+            // await connection.close();
         } catch (err) {
             console.error('db query error : ', err);
         }

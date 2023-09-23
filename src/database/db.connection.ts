@@ -22,10 +22,8 @@ export default class DBService {
         return connection;
     }
 
-    async query(query: string) {
+    async query() {
         try {
-            console.log(query);
-
             await getConnectionString();
             // const connection = await this.connect();
 

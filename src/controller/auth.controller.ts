@@ -10,9 +10,6 @@ export default class AuthController {
 
     getTestMessage(req: Request, res: Response) {
         try {
-            const query = req.query.test as string;
-            console.log('test : ', query);
-
             const service = new AuthService();
             service.setAuthCode();
 

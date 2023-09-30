@@ -8,13 +8,8 @@ const getConnectionString = async () => {
     // - AZURE_CLIENT_ID: The application (client) ID registered in the AAD tenant
     // - AZURE_CLIENT_SECRET: The client secret for the registered application
     const credential = new DefaultAzureCredential();
-
-    // const keyVaultName = process.env['KEY_VAULT_NAME'];
-    // if (!keyVaultName) throw new Error('KEY_VAULT_NAME is empty');
-    //const url = 'https://moneynotevault.vault.azure.net/'; // 'https://' + keyVaultName + '.vault.azure.net';
-
-    const test = process.env.KEYVAULT_URI as string;
-    const client = new SecretClient(test, credential);
+    const keyvaultUrl = process.env.KEYVAULT_URI as string;
+    const client = new SecretClient(keyvaultUrl, credential);
 
     // Create a secret
     // The secret can be a string of any kind. For example,

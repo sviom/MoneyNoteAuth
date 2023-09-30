@@ -1,4 +1,4 @@
-import { Connection, Request } from 'tedious';
+import { Connection, Request, TYPES } from 'tedious';
 import { getConnectionString } from '@src/utils/keyvault';
 import { DBResult } from '@src/model/db.model';
 
@@ -26,7 +26,7 @@ export default class DBService {
         return connection;
     }
 
-    query = async <T>(query: string) => {
+    query = async <T, U>(query: string, param: U) => {
         const returnValue = new DBResult<T>();
 
         const connection = await this.connect();
@@ -42,6 +42,13 @@ export default class DBService {
                 connection.close();
             }
         });
+
+        if (param) {
+            for (const [key, value] of Object.entries(param)) {
+                console.log(`${key}: ${value}`);
+                request.addParameter('', TYPES.NVarChar, '');
+            }
+        }
 
         request.on('row', function (columns) {
             columns.forEach(function (column) {

@@ -13,9 +13,8 @@ const getConnectionString = async () => {
     // if (!keyVaultName) throw new Error('KEY_VAULT_NAME is empty');
     //const url = 'https://moneynotevault.vault.azure.net/'; // 'https://' + keyVaultName + '.vault.azure.net';
 
-    const test = process.env.KEYVAULT_URI as string;    
+    const test = process.env.KEYVAULT_URI as string;
     const client = new SecretClient(test, credential);
-    console.log('test');
 
     // Create a secret
     // The secret can be a string of any kind. For example,
@@ -28,7 +27,6 @@ const getConnectionString = async () => {
 
     // Read the secret we created
     const secret = await client.getSecret('mconnection');
-    console.log('secret: ', secret);
 
     // Update the secret with different attributes
     // const updatedSecret = await client.updateSecretProperties(secretName, result.properties.version, {
@@ -38,6 +36,7 @@ const getConnectionString = async () => {
 
     // Delete the secret immediately without ability to restore or purge.
     // await client.beginDeleteSecret(secretName);
+    return secret.value;
 };
 
 export { getConnectionString };

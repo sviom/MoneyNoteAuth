@@ -1,37 +1,26 @@
 import { afterEach, describe, expect, test } from '@jest/globals';
-import { sum } from './sum';
 import { validate } from '@src/service/auth.service';
 import { User } from '@src/model/user.model';
-
-describe('sum module', () => {
-    test('adds 1 + 2 to equal 3', () => {
-        expect(sum(1, 2)).toBe(3);
-    });
-});
-
-/** 테스트용임을 알리는 텍스트, 추후 데이터베이스에서 삭제 시 필요 */
-const testMock = '_test';
-
-const user1 = new User();
-user1.name = `hanbyul${testMock}`;
-user1.email = '';
-user1.passwword = '';
+import { CustomError } from '@src/model/error.model';
+import mockList from './auth.mock';
 
 /** 테스트용 목업 리스트 */
-const mockupList: User[] = [user1];
+const mockupList: { user: User; error: CustomError | null; success: boolean; name: string }[] = mockList;
 
-test('test', async () => {
-    const user = new User();
+describe('Check User validate', () => {
+    test.each(mockupList)('test case name', (arg: { user: User; error: CustomError | null; success: boolean; name: string }) => {
+        const validateResult = validate(arg.user);
 
-    mockupList.forEach((x) => {
-        validate(x);
+        console.log('name : ', arg.name);
+
+        // console.log('result message : ', validateResult.error?.message);
+        // console.log('arg message : ', arg.error?.message);
+
+        expect(validateResult.error?.message).toEqual(arg.error?.message);
+        expect(validateResult.success).toEqual(arg.success);
     });
 
-    // db get
-
-    expect(user).toBe(user);
-});
-
-afterEach(() => {
-    // clear database
+    afterEach(() => {
+        // clear database
+    });
 });

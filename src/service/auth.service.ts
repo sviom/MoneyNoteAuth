@@ -4,9 +4,9 @@ import { generateRandomCode } from '@src/utils/auth';
 import { User } from '@src/model/user.model';
 import { CustomError } from '@src/model/error.model';
 
-class AuthCode {
-    public code: string = '';
-}
+// class AuthCode {
+//     public code: string = '';
+// }
 
 /**
  * 사용자 정보가 올바른지 체크
@@ -62,9 +62,8 @@ export default class AuthService {
             user.authCode = code;
 
             // 서버에 해당 이메일이 있는지 확인 인증코드 저장
-            const service = new DBService();
             // const result = await service.query<AuthCode, User>(authSql.setAuthCode, user);
-            const result = await service.connection<User>(authSql.setAuthCode, user);
+            const result = await DBService.connection<User>(authSql.setAuthCode, user);
 
             console.log(result);
             if (result.length < 2) return new CustomError('test', -1);

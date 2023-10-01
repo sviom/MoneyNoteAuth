@@ -3,8 +3,8 @@ import { DBResult } from '@src/model/db.model';
 import { Options, Sequelize } from 'sequelize';
 
 export default class DBService {
-    private static password = '';
-    private static host = '';
+    static password = '';
+    static host = '';
 
     static sequelize: Sequelize;
 
@@ -12,15 +12,15 @@ export default class DBService {
         const host = await getVaultSecret('mconnectionhost');
         const password = await getVaultSecret('mconnectionpw');
 
-        this.password = password || '';
-        this.host = host || '';
+        DBService.password = password || '';
+        DBService.host = host || '';
 
         const config: Options = {
             dialect: 'mssql',
             port: 1433,
-            host: this.host,
+            host: host,
             database: 'moneynote',
-            password: this.password,
+            password: password,
             pool: {
                 max: 10,
                 idle: 2,
@@ -39,7 +39,7 @@ export default class DBService {
             },
         };
 
-        this.sequelize = new Sequelize(config);
+        DBService.sequelize = new Sequelize(config);
     }
 
     static connection = async <T>(query: string, param: any) => {

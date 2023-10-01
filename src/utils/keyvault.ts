@@ -34,15 +34,15 @@ const getConnectionString = async () => {
     return secret.value;
 };
 
-const getVaultSecret = async (secretName: string) => {
-    if (!secretName) return;
+const getVaultSecret = async (secretName: string): Promise<string> => {
+    if (!secretName) return '';
 
     const credential = new DefaultAzureCredential();
     const keyvaultUrl = process.env.KEYVAULT_URI as string;
     const client = new SecretClient(keyvaultUrl, credential);
 
-    const secret = await client.getSecret(secretName);
-    return secret.value;
+    const result = await client.getSecret(secretName);
+    return result.value || '';
 };
 
 export { getConnectionString, getVaultSecret };

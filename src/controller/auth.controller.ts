@@ -5,15 +5,16 @@ export default class AuthController {
     public router: Router = express.Router();
 
     constructor() {
-        this.router.post('/auth', this.getTestMessage);
+        // this.router.post('/auth', this.getTestMessage);
+        this.router.get('/auth', this.getTestMessage);
     }
 
-    getTestMessage(req: Request, res: Response) {
+    async getTestMessage(req: Request, res: Response) {
         try {
-            new AuthService();
-            // service.setAuthCode();
+            const service = new AuthService();
+            const result = await service.getAuthCodeList();
 
-            res.status(200).json({ test: 'test message' });
+            res.status(200).json({ test: 'test message', result: result });
         } catch (error) {
             console.error(error);
             res.status(500).end();

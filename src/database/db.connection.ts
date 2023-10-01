@@ -34,12 +34,17 @@ export default class DBService {
             query: {
                 raw: true,
             },
+            dialectOptions: {
+                useUTC: false,
+            },
         };
 
         this.sequelize = new Sequelize(config);
     }
 
     static connection = async <T>(query: string, param: any) => {
+        console.log('testtest');
+
         const [results] = await this.sequelize.query(query, {
             bind: param,
         });

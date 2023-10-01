@@ -80,6 +80,11 @@ export default class AuthService {
             return new CustomError('test', -1);
         }
     }
+
+    async getAuthCodeList() {
+        const result = await DBService.connection<User>(authSql.getUserList, {});
+        return result;
+    }
 }
 
 export { validate };

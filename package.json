@@ -3,7 +3,8 @@
     "scripts": {
         "build": "tsc && tsc-alias",
         "dev": "tsc && tsc-alias && cross-env NODE_ENV=dev node -r tsconfig-paths/register dist/main.js",
-        "start:watch": "tsc-watch --onSuccess \"npm run dev\""
+        "start:watch": "tsc-watch --onSuccess \"npm run dev\"",
+        "test": "npm run build && jest"
     },
     "devDependencies": {
         "@jest/globals": "^29.7.0",

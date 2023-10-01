@@ -63,12 +63,13 @@ export default class AuthService {
 
             // 서버에 해당 이메일이 있는지 확인 인증코드 저장
             const service = new DBService();
-            const result = await service.query<AuthCode, User>(authSql.setAuthCode, user);
+            // const result = await service.query<AuthCode, User>(authSql.setAuthCode, user);
+            const result = await service.connection<User>(authSql.setAuthCode, user);
 
-            console.log(result.data);
-            if (result.data.length < 2) return new CustomError('test', -1);
+            console.log(result);
+            if (result.length < 2) return new CustomError('test', -1);
 
-            const authCode = result.data[0];
+            const authCode = result[0];
             console.log(authCode);
 
             // 암호화

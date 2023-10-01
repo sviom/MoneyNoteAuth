@@ -1,6 +1,7 @@
 import { Connection, Request, TYPES } from 'tedious';
 import { getConnectionString } from '@src/utils/keyvault';
 import { DBResult } from '@src/model/db.model';
+import { Options, Sequelize } from 'sequelize';
 
 export default class DBService {
     async connect() {
@@ -61,5 +62,37 @@ export default class DBService {
         connection.execSql(request);
 
         return returnValue;
+    };
+
+    connection = async <T>(query: string, param: any) => {
+        const config: Options = {
+            dialect: 'mssql',
+            port: 9999,
+            host: '',
+            database: 'moneynote',
+            password: '',
+            pool: {
+                max: 10,
+                idle: 2,
+            },
+            retry: {
+                max: 2,
+                timeout: 30000,
+            },
+            timezone: '+09:00',
+            logging: console.log,
+            query: {
+                raw: true,
+            },
+        };
+
+        const sequelize = new Sequelize(config);
+
+        const [results] = await sequelize.query(query, {
+            bind: param,
+        });
+
+        const zz = results as T[];
+        return zz;
     };
 }

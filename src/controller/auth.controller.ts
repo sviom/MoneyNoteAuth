@@ -5,13 +5,13 @@ export default class AuthController {
     public router: Router = express.Router();
 
     constructor() {
-        this.router.get('/test', this.getTestMessage);
+        this.router.post('/auth', this.getTestMessage);
     }
 
     getTestMessage(req: Request, res: Response) {
         try {
-            const service = new AuthService();
-            service.setAuthCode();
+            new AuthService();
+            // service.setAuthCode();
 
             res.status(200).json({ test: 'test message' });
         } catch (error) {

@@ -10,12 +10,6 @@ const mockupList: { user: User; error: CustomError | null; success: boolean; nam
 describe('Check User validate', () => {
     test.each(mockupList)('test case name', (arg: { user: User; error: CustomError | null; success: boolean; name: string }) => {
         const validateResult = validate(arg.user);
-
-        console.log('name : ', arg.name);
-
-        // console.log('result message : ', validateResult.error?.message);
-        // console.log('arg message : ', arg.error?.message);
-
         expect(validateResult.error?.message).toEqual(arg.error?.message);
         expect(validateResult.success).toEqual(arg.success);
     });

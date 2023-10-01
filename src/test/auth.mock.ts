@@ -2,7 +2,7 @@ import { CustomError } from '@src/model/error.model';
 import { User } from '@src/model/user.model';
 
 const validEmail = 'kanghanstar@outlook.com';
-const validPassword = 'adfdajfkajfd;!dfjJJ0';
+const validPassword = 'dfkadjf@dfdmDd02';
 const validName = 'hanbyulkang';
 const validId = 'kanghanstar';
 

@@ -1,9 +1,9 @@
 class CustomError {
     statusCode: number = -1;
-    message: string = 'S';
+    message: string = '';
     error = null;
 
-    constructor(message: string, code: number) {
+    constructor(message: string = '', code: number = -1) {
         this.statusCode = code;
         this.message = message;
     }

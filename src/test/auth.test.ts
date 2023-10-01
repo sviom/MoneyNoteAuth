@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { sum } from './sum';
-import AuthService from '@src/service/auth.service';
+import { validate } from '@src/service/auth.service';
 import { User } from '@src/model/user.model';
 
 describe('sum module', () => {
@@ -23,8 +23,9 @@ const mockupList: User[] = [user1];
 test('test', async () => {
     const user = new User();
 
-    const service = new AuthService();
-    const result = service.setAuthCode(user);
+    mockupList.forEach((x) => {
+        validate(x);
+    });
 
     // db get
 

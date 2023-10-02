@@ -2,7 +2,7 @@ class User {
     name: string;
     id: string;
     email: string;
-    passwword: string;
+    password: string;
     createdTime: Date;
     authCode: string;
 
@@ -10,7 +10,7 @@ class User {
         this.name = '';
         this.id = '';
         this.email = '';
-        this.passwword = '';
+        this.password = '';
         this.createdTime = new Date();
         this.authCode = '';
     }

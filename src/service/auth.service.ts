@@ -31,9 +31,9 @@ const validate = (user: User): { success: boolean; error: CustomError | null } =
         error.message = '사용자의 닉네임을 입력해주세요.';
     } else if (!user.id) {
         error.message = '사용자의 아이디가 잘못되었습니다. 올바른 값을 입력해주세요.';
-    } else if (!user.passwword) {
+    } else if (!user.password) {
         error.message = '비밀번호가 입력되지 않았습니다. 비밀번호를 입력해주세요.';
-    } else if (!passwordRegx.test(user.passwword)) {
+    } else if (!passwordRegx.test(user.password)) {
         error.message = '올바른 비밀번호를 입력해주세요.';
     } else if (!user.email) {
         error.message = '이메일을 입력해주세요.';
@@ -63,7 +63,7 @@ export default class AuthService {
 
             // 서버에 해당 이메일이 있는지 확인 인증코드 저장
             // const result = await service.query<AuthCode, User>(authSql.setAuthCode, user);
-            const result = await DBService.connection<User>(authSql.setAuthCode, user);
+            const result = await DBService.connection<User>(authSql.setUser, user);
 
             console.log(result);
             if (result.length < 2) return new CustomError('test', -1);
@@ -83,7 +83,29 @@ export default class AuthService {
 
     async getAuthCodeList() {
         const result = await DBService.connection<User>(authSql.getUserList, {});
+        console.log('test');
+
         return result;
+    }
+
+    async setUser() {
+        const validEmail = 'kanghanstar@outlook.com';
+        const validPassword = 'dfkadjf@dfdmDd02';
+        const validName = 'hanbyulkang';
+
+        /** 올바른 입력 테스트 케이스 */
+        const user1 = new User();
+        user1.name = validName;
+        user1.email = validEmail;
+        user1.password = validPassword;
+
+        // 인증코드 만들기(난수)
+        const code = generateRandomCode(6);
+        user1.authCode = code;
+
+        // 서버에 해당 이메일이 있는지 확인 인증코드 저장
+        const result = await DBService.connection<User>(authSql.setUser, user1);
+        console.log('test');
     }
 }
 

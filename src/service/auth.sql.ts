@@ -1,7 +1,7 @@
 const authSql = {
-    setAuthCode: `
-        INSERT INTO [User] (id, name, email, password, createdTime, updatedTime, isApproved, authCode)
-        VALUES (@id, @name, @email, @password, GETDATE(), NULL, FALSE, @authCode);
+    setUser: `
+        INSERT INTO [User] (name, email, password, createdTime, updatedTime, isApproved, authCode)
+        VALUES ($name, $email, $password, GETDATE(), NULL, 0, $authCode);
     `,
     getUserList: `
         SELECT *

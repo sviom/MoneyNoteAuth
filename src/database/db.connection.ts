@@ -16,6 +16,7 @@ export default class DBService {
         DBService.host = host || '';
 
         const config: Options = {
+            username: 'kanghanstar',
             dialect: 'mssql',
             port: 1433,
             host: host,
@@ -43,9 +44,9 @@ export default class DBService {
     }
 
     static connection = async <T>(query: string, param: any) => {
-        console.log('testtest');
+        await DBService.sequelize.authenticate();
 
-        const [results] = await this.sequelize.query(query, {
+        const [results] = await DBService.sequelize.query(query, {
             bind: param,
         });
 

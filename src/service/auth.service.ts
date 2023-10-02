@@ -3,10 +3,7 @@ import authSql from './auth.sql';
 import { generateRandomCode } from '@src/utils/auth';
 import { User } from '@src/model/user.model';
 import { CustomError } from '@src/model/error.model';
-
-// class AuthCode {
-//     public code: string = '';
-// }
+import { crypt } from '@src/utils/crypto';
 
 /**
  * 사용자 정보가 올바른지 체크
@@ -51,25 +48,17 @@ const validate = (user: User): { success: boolean; error: CustomError | null } =
 };
 
 export default class AuthService {
-    async setAuthCode(user: User): Promise<boolean | CustomError> {
+    async setUser(user: User): Promise<boolean | CustomError> {
         try {
-            // 나머지 값들이 잘 들어왔는지 Validation
             const validateResult = validate(user);
             if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
 
-            // 인증코드 만들기(난수)
             const code = generateRandomCode(6);
             user.authCode = code;
+            user.password = crypt(user.password);
 
-            // 서버에 해당 이메일이 있는지 확인 인증코드 저장
-            // const result = await service.query<AuthCode, User>(authSql.setAuthCode, user);
-            const result = await DBService.connection<User>(authSql.setUser, user);
-
-            console.log(result);
-            if (result.length < 2) return new CustomError('test', -1);
-
-            const authCode = result[0];
-            console.log(authCode);
+            // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
+            await DBService.connection<User>(authSql.setUser, user);
 
             // 암호화
             // 주소/api/auth/auth post 로 링크 만들기
@@ -83,29 +72,7 @@ export default class AuthService {
 
     async getAuthCodeList() {
         const result = await DBService.connection<User>(authSql.getUserList, {});
-        console.log('test');
-
         return result;
-    }
-
-    async setUser() {
-        const validEmail = 'kanghanstar@outlook.com';
-        const validPassword = 'dfkadjf@dfdmDd02';
-        const validName = 'hanbyulkang';
-
-        /** 올바른 입력 테스트 케이스 */
-        const user1 = new User();
-        user1.name = validName;
-        user1.email = validEmail;
-        user1.password = validPassword;
-
-        // 인증코드 만들기(난수)
-        const code = generateRandomCode(6);
-        user1.authCode = code;
-
-        // 서버에 해당 이메일이 있는지 확인 인증코드 저장
-        const result = await DBService.connection<User>(authSql.setUser, user1);
-        console.log('test');
     }
 }
 

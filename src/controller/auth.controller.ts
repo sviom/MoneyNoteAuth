@@ -1,3 +1,4 @@
+import { User } from '@src/model/user.model';
 import AuthService from '@src/service/auth.service';
 import express, { Router, Request, Response } from 'express';
 
@@ -24,8 +25,19 @@ export default class AuthController {
 
     async setUser(req: Request, res: Response) {
         try {
+            const { name, email, password } = req.body as { name: string; email: string; password: string };
+
+            // const validEmail = 'kanghanstar@outlook.com';
+            // const validPassword = 'dfkadjf@dfdmDd02';
+            // const validName = 'hanbyulkang';
+
+            const user = new User();
+            user.name = name;
+            user.email = email;
+            user.password = password;
+
             const service = new AuthService();
-            const result = await service.setUser();
+            const result = await service.setUser(user);
 
             res.status(200).json({ test: 'test message', result: result });
         } catch (error) {

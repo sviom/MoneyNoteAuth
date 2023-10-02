@@ -46,11 +46,15 @@ export default class DBService {
     static connection = async <T>(query: string, param: any) => {
         await DBService.sequelize.authenticate();
 
-        const [results] = await DBService.sequelize.query(query, {
+        const [results, metadata] = await DBService.sequelize.query(query, {
             bind: param,
         });
 
-        const zz = results as DBResult<T>[];
-        return zz;
+        const TList = results as T[];
+        const result = new DBResult<T>();
+        result.data = TList;
+        result.rowCount = metadata as number;
+
+        return result;
     };
 }

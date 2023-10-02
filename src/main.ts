@@ -8,9 +8,12 @@ console.log('실행1');
 import express from 'express';
 import Controller from './controller/index';
 import CryptoService from './utils/crypto';
+import bodyParser from 'body-parser';
 
 const port = 3011;
 const app = express();
+
+app.use(bodyParser.json());
 
 app.use('/api', new Controller().router);
 

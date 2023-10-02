@@ -6,7 +6,7 @@ class CryptoService {
     private static key: string;
 
     static async setKey() {
-        CryptoService.iv = await getVaultSecret('mnkiv');
+        CryptoService.iv = await getVaultSecret('mniv');
         CryptoService.key = await getVaultSecret('mnkey');
     }
 

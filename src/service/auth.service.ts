@@ -4,6 +4,7 @@ import { generateRandomCode } from '@src/utils/auth';
 import { PreUser, User } from '@src/model/user.model';
 import { CustomError } from '@src/model/error.model';
 import CryptoService from '@src/utils/crypto';
+import { sendMail } from '@src/utils/mail';
 
 /**
  * 사용자 정보가 올바른지 체크
@@ -69,6 +70,8 @@ export default class AuthService {
             // 이메일 보내기
             const mail = `http://127.0.0.1:3011/api/auth/user?message=${CryptoService.cipher(JSON.stringify(preuser))}`;
             console.log('email : ', mail);
+
+            await sendMail('kanghanstar@gmail.com', mail);
 
             return true;
         } catch (error) {

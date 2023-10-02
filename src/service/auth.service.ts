@@ -27,8 +27,6 @@ const validate = (user: User): { success: boolean; error: CustomError | null } =
 
     if (!user.name || user.name.length < 3) {
         error.message = '사용자의 닉네임을 입력해주세요.';
-    } else if (!user.id) {
-        error.message = '사용자의 아이디가 잘못되었습니다. 올바른 값을 입력해주세요.';
     } else if (!user.password) {
         error.message = '비밀번호가 입력되지 않았습니다. 비밀번호를 입력해주세요.';
     } else if (!passwordRegx.test(user.password)) {

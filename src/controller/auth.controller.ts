@@ -10,7 +10,7 @@ export default class AuthController {
         // this.router.post('/auth', this.getTestMessage);
         this.router.get('/auth', this.getTestMessage);
         this.router.post('/auth', this.setPreUser);
-        this.router.post('/user', this.setUser);
+        this.router.get('/user', this.setUser);
     }
 
     async getTestMessage(req: Request, res: Response) {
@@ -46,8 +46,9 @@ export default class AuthController {
 
     async setUser(req: Request, res: Response) {
         try {
-            const { message } = req.body as { message: string };
+            const { message } = req.query as { message: string };
 
+            console.log('test');
             const info: PreUser = JSON.parse(CryptoService.decipher(message)) as PreUser;
 
             let user = new User();

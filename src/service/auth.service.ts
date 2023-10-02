@@ -1,7 +1,7 @@
 import DBService from '@src/database/db.connection';
 import authSql from './auth.sql';
 import { generateRandomCode } from '@src/utils/auth';
-import { User } from '@src/model/user.model';
+import { PreUser, User } from '@src/model/user.model';
 import { CustomError } from '@src/model/error.model';
 import CryptoService from '@src/utils/crypto';
 
@@ -55,19 +55,22 @@ export default class AuthService {
 
             const code = generateRandomCode(6);
             const password = CryptoService.crypt(user.password);
+            user.password = password;
 
             // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
-            await DBService.connection<string>(authSql.setPreUser, { authCode: code });
+            const result = await DBService.connection<string>(authSql.setPreUser, { authCode: code });
+            const id = result[0].data[0];
 
-            user.authCode = code;
+            const preuser = new PreUser();
+            preuser.authCode = code;
+            preuser.id = id;
+            preuser.user = user;
 
-            // 암호화
-            // 주소/api/auth/auth post 로 링크 만들기
             // 이메일 보내기
-            const mail = `http://127.0.0.1:3011?name=${user.name}password=${password}email=${user.email}authCode=${code}`;
-            const cryptedMessage = CryptoService.cipher(mail);
+            const mail = `http://127.0.0.1:3011/api/auth/user?message=${CryptoService.cipher(JSON.stringify(preuser))}`;
+            console.log('email : ', mail);
 
-            //  { message: cryptedMessage };
+            return true;
         } catch (error) {
             console.error(error);
             return new CustomError('test', -1);

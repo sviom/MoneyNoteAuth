@@ -16,7 +16,18 @@ class User {
     }
 }
 
-//
-// INSERT INTO [User] (id, name, email, password, createdTime, updatedTime, isApproved, authCode)
-// VALUES (@id, @name, @email, @password, GETDATE(), NULL, FALSE, @authCode);
-export { User };
+class PreUser {
+    id: string;
+    authCode: string;
+    createdTime: Date;
+
+    user: User | null = null;
+
+    constructor() {
+        this.id = '';
+        this.authCode = '';
+        this.createdTime = new Date();
+    }
+}
+
+export { User, PreUser };

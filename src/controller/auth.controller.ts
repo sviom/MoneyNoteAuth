@@ -1,4 +1,4 @@
-import { User } from '@src/model/user.model';
+import { PreUser, User } from '@src/model/user.model';
 import AuthService from '@src/service/auth.service';
 import CryptoService from '@src/utils/crypto';
 import express, { Router, Request, Response } from 'express';
@@ -48,18 +48,10 @@ export default class AuthController {
         try {
             const { message } = req.body as { message: string };
 
-            const info: { name: string; email: string; password: string; authCode: string } = JSON.parse(CryptoService.decipher(message)) as {
-                name: string;
-                email: string;
-                password: string;
-                authCode: string;
-            };
+            const info: PreUser = JSON.parse(CryptoService.decipher(message)) as PreUser;
 
-            const user = new User();
-            user.name = info.name;
-            user.email = info.email;
-            user.password = info.password;
-            user.authCode = info.authCode;
+            let user = new User();
+            user = info.user || new User();
 
             const service = new AuthService();
             const result = await service.setUser(user);

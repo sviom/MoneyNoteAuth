@@ -4,7 +4,7 @@ import sgMail from '@sendgrid/mail';
 
 const sendMail = async (address: string, content: string) => {
     try {
-        const key = process.env.SENDGRID_API_KEY || '';
+        const key = process.env.SEND_GRID_KEY || '';
         if (!key) return;
 
         sgMail.setApiKey(key);
@@ -14,7 +14,7 @@ const sendMail = async (address: string, content: string) => {
             from: 'kanghanstar@outlook.com', // Change to your verified sender
             subject: 'Sending with SendGrid is Fun',
             text: content,
-            html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+            html: `<strong>and easy to do anywhere, even with Node.js</strong><a href="${content}" >인증하기</a>`,
         };
         const response = await sgMail.send(msg);
         console.log('response = ', response);

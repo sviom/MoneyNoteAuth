@@ -1,10 +1,8 @@
 import 'dotenv/config';
 import config from 'dotenv';
-import DBService from './database/db.connection';
-
 config.config();
-console.log('실행1');
 
+import DBService from './database/db.connection';
 import express from 'express';
 import Controller from './controller/index';
 import CryptoService from './utils/crypto';

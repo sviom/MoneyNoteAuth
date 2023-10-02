@@ -57,8 +57,8 @@ export default class AuthService {
             user.password = password;
 
             // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
-            const result = await DBService.connection<string>(authSql.setPreUser, { authCode: code });
-            const id = result[0].data[0];
+            const result = await DBService.connection<{ id: string }>(authSql.setPreUser, { authCode: code });
+            const id = result.data[0].id;
 
             const preuser = new PreUser();
             preuser.authCode = code;

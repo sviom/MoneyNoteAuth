@@ -2,12 +2,12 @@ import crypto from 'crypto';
 import { getVaultSecret } from './keyvault';
 
 class CryptoService {
-    private static iv: string;
+    private static salt: string;
     private static key: string;
 
     static async setKey() {
-        CryptoService.iv = await getVaultSecret('mniv');
         CryptoService.key = await getVaultSecret('mnkey');
+        CryptoService.salt = await getVaultSecret('mniv');
     }
 
     /** 해시 암호화 */
@@ -17,23 +17,30 @@ class CryptoService {
     };
 
     /** 암호화 */
-    static cipher = (password: string) => {
-        const encrypt = crypto.createCipheriv('aes-256-ocb', CryptoService.key, CryptoService.iv); // des알고리즘과 키를 설정
-        const encryptResult =
-            encrypt.update(password, 'utf8', 'base64') + // 암호화
-            encrypt.final('base64'); // 인코딩
+    static cipher = (text: string) => {
+        const iv = crypto.randomBytes(16);
+        const key = crypto.scryptSync(CryptoService.key, CryptoService.salt, 32);
 
-        return encryptResult;
+        const encrypt = crypto.createCipheriv('aes-256-cbc', key, iv);
+        const encryptResult = encrypt.update(text); // , 'utf8', 'base64');
+        const encrypted = Buffer.concat([encryptResult, encrypt.final()]);
+        return iv.toString('hex') + ':' + encrypted.toString('hex');
     };
 
     /** 복호화 */
-    static decipher = (password: string) => {
-        const decode = crypto.createDecipheriv('aes-256-ocb', CryptoService.key, CryptoService.iv);
-        const decodeResult =
-            decode.update(password, 'base64', 'utf8') + // 암호화된 문자열, 암호화 했던 인코딩 종류, 복호화 할 인코딩 종류 설정
-            decode.final('utf8'); // 복호화 결과의 인코딩
+    static decipher = (text: string) => {
+        const textParts = text.split(':');
+        const parts = textParts.shift() || '';
+        const iv = Buffer.from(parts, 'hex');
+        const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+        const key = crypto.scryptSync(CryptoService.key, CryptoService.salt, 32);
 
-        return decodeResult;
+        const decode = crypto.createDecipheriv('aes-256-cbc', key, iv);
+        let decrypted = decode.update(encryptedText);
+        decrypted = Buffer.concat([decrypted, decode.final()]);
+        const decodeResult = decode.update(decrypted);
+
+        return decodeResult.toString();
     };
 }
 

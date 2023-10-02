@@ -27,10 +27,8 @@ export default class AuthController {
 
     async setPreUser(req: Request, res: Response) {
         try {
-            console.log('test');
             const { name, email, password } = req.body as { name: string; email: string; password: string };
 
-            console.log('test');
             const user = new User();
             user.name = name;
             user.email = email;

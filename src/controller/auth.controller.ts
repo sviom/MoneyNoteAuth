@@ -29,17 +29,13 @@ export default class AuthController {
         try {
             const { name, email, password } = req.body as { name: string; email: string; password: string };
 
-            // const validEmail = 'kanghanstar@outlook.com';
-            // const validPassword = 'dfkadjf@dfdmDd02';
-            // const validName = 'hanbyulkang';
-
             const user = new User();
             user.name = name;
             user.email = email;
             user.password = password;
 
             const service = new AuthService();
-            const result = await service.setUser(user);
+            const result = await service.setPreUser(user);
 
             res.status(200).json({ test: 'test message', result: result });
         } catch (error) {
@@ -52,12 +48,18 @@ export default class AuthController {
         try {
             const { message } = req.body as { message: string };
 
-            const info: { name: string; email: string; password: string } = JSON.parse(CryptoService.decipher(message)) as { name: string; email: string; password: string };
+            const info: { name: string; email: string; password: string; authCode: string } = JSON.parse(CryptoService.decipher(message)) as {
+                name: string;
+                email: string;
+                password: string;
+                authCode: string;
+            };
 
             const user = new User();
             user.name = info.name;
             user.email = info.email;
             user.password = info.password;
+            user.authCode = info.authCode;
 
             const service = new AuthService();
             const result = await service.setUser(user);

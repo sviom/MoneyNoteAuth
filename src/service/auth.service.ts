@@ -48,21 +48,44 @@ const validate = (user: User): { success: boolean; error: CustomError | null } =
 };
 
 export default class AuthService {
-    async setUser(user: User): Promise<boolean | CustomError> {
+    async setPreUser(user: User): Promise<boolean | CustomError> {
         try {
             const validateResult = validate(user);
             if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
 
             const code = generateRandomCode(6);
+            const password = CryptoService.crypt(user.password);
+
+            // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
+            await DBService.connection<string>(authSql.setPreUser, { authCode: code });
+
             user.authCode = code;
+
+            // 암호화
+            // 주소/api/auth/auth post 로 링크 만들기
+            // 이메일 보내기
+            const mail = `http://127.0.0.1:3011?name=${user.name}password=${password}email=${user.email}authCode=${code}`;
+            const cryptedMessage = CryptoService.cipher(mail);
+
+            //  { message: cryptedMessage };
+        } catch (error) {
+            console.error(error);
+            return new CustomError('test', -1);
+        }
+    }
+
+    async setUser(user: User): Promise<boolean | CustomError> {
+        try {
+            const validateResult = validate(user);
+            if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
+
+            // AuthCode가 일치하는지 확인
+
             user.password = CryptoService.crypt(user.password);
 
             // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
             await DBService.connection<User>(authSql.setUser, user);
 
-            // 암호화
-            // 주소/api/auth/auth post 로 링크 만들기
-            // 이메일 보내기
             return true;
         } catch (error) {
             console.error(error);

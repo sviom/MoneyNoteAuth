@@ -1,5 +1,6 @@
 import { User } from '@src/model/user.model';
 import AuthService from '@src/service/auth.service';
+import CryptoService from '@src/utils/crypto';
 import express, { Router, Request, Response } from 'express';
 
 export default class AuthController {
@@ -8,6 +9,7 @@ export default class AuthController {
     constructor() {
         // this.router.post('/auth', this.getTestMessage);
         this.router.get('/auth', this.getTestMessage);
+        this.router.post('/auth', this.setPreUser);
         this.router.post('/user', this.setUser);
     }
 
@@ -23,7 +25,7 @@ export default class AuthController {
         }
     }
 
-    async setUser(req: Request, res: Response) {
+    async setPreUser(req: Request, res: Response) {
         try {
             const { name, email, password } = req.body as { name: string; email: string; password: string };
 
@@ -35,6 +37,27 @@ export default class AuthController {
             user.name = name;
             user.email = email;
             user.password = password;
+
+            const service = new AuthService();
+            const result = await service.setUser(user);
+
+            res.status(200).json({ test: 'test message', result: result });
+        } catch (error) {
+            console.error(error);
+            res.status(500).end();
+        }
+    }
+
+    async setUser(req: Request, res: Response) {
+        try {
+            const { message } = req.body as { message: string };
+
+            const info: { name: string; email: string; password: string } = JSON.parse(CryptoService.decipher(message)) as { name: string; email: string; password: string };
+
+            const user = new User();
+            user.name = info.name;
+            user.email = info.email;
+            user.password = info.password;
 
             const service = new AuthService();
             const result = await service.setUser(user);

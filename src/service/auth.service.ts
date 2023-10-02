@@ -3,7 +3,7 @@ import authSql from './auth.sql';
 import { generateRandomCode } from '@src/utils/auth';
 import { User } from '@src/model/user.model';
 import { CustomError } from '@src/model/error.model';
-import { crypt } from '@src/utils/crypto';
+import CryptoService from '@src/utils/crypto';
 
 /**
  * 사용자 정보가 올바른지 체크
@@ -55,7 +55,7 @@ export default class AuthService {
 
             const code = generateRandomCode(6);
             user.authCode = code;
-            user.password = crypt(user.password);
+            user.password = CryptoService.crypt(user.password);
 
             // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
             await DBService.connection<User>(authSql.setUser, user);

@@ -5,23 +5,20 @@ import DBService from './database/db.connection';
 config.config();
 console.log('실행1');
 
-import express, { Request, Response } from 'express';
+import express from 'express';
 import Controller from './controller/index';
+import CryptoService from './utils/crypto';
 
 const port = 3011;
 const app = express();
 
+app.use('/api', new Controller().router);
+
 (async () => {
+    /** 암호화를 위한 정보 가져오기 */
+    await CryptoService.setKey();
+    /** DB연결 미리 해놓기 */
     await DBService.setConnection();
-    console.log('실행2');
-
-    app.get('/', (req: Request, res: Response) => {
-        res.send('Typescript + Node.js + Express Server');
-    });
-    console.log('실행3');
-
-    app.use('/api', new Controller().router);
-
     app.listen(port, () => {
         console.log(`app listen, and port is : ${port} `);
     });

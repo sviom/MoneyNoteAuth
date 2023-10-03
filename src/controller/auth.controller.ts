@@ -53,7 +53,7 @@ export default class AuthController {
             user = info.user || new User();
 
             const service = new AuthService();
-            const result = await service.setUser(user);
+            const result = await service.setUser(user, info.authCode);
 
             res.status(200).json({ test: 'test message', result: result });
         } catch (error) {

@@ -75,14 +75,20 @@ export default class AuthService {
         }
     }
 
-    async setUser(user: User): Promise<boolean | CustomError> {
+    async setUser(user: User, authCode: string): Promise<boolean | CustomError> {
         try {
+            const message = '인증코드가 일치하지 않습니다. 코드를 다시 확인해주세요.';
+            if (!authCode) return new CustomError(message, -1);
+
             const validateResult = validate(user);
             if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
 
             // AuthCode가 일치하는지 확인
+            const checkResult = await DBService.connection<PreUser>(authSql.getAuthCode, { authCode });
+            if (checkResult.rowCount < 1) return new CustomError(message, -1);
 
             user.password = CryptoService.crypt(user.password);
+            user.authCode = authCode;
 
             // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
             await DBService.connection<User>(authSql.setUser, user);

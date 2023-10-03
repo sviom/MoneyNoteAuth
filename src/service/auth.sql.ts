@@ -17,6 +17,12 @@ const authSql = {
         SELECT *
         FROM [User];
     `,
+    signIn: `
+        SELECT *
+        FROM [User]        
+        WHERE name = $name
+            AND password = $password;
+    `,
 };
 
 export default authSql;

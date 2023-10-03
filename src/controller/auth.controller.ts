@@ -11,6 +11,7 @@ export default class AuthController {
         this.router.get('/auth', this.getTestMessage);
         this.router.post('/auth', this.setPreUser);
         this.router.get('/user', this.setUser);
+        this.router.post('/signin', this.signin);
     }
 
     async getTestMessage(req: Request, res: Response) {
@@ -54,6 +55,20 @@ export default class AuthController {
 
             const service = new AuthService();
             const result = await service.setUser(user, info.authCode);
+
+            res.status(200).json({ test: 'test message', result: result });
+        } catch (error) {
+            console.error(error);
+            res.status(500).end();
+        }
+    }
+
+    async signin(req: Request, res: Response) {
+        try {
+            const { name, password } = req.body as { name: string; password: string };
+
+            const service = new AuthService();
+            const result = await service.signIn(name, password);
 
             res.status(200).json({ test: 'test message', result: result });
         } catch (error) {

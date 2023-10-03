@@ -14,6 +14,13 @@ class User {
         this.createdTime = new Date();
         this.authCode = '';
     }
+
+    get info() {
+        return {
+            name: this.name,
+            email: this.email,
+        };
+    }
 }
 
 class PreUser {

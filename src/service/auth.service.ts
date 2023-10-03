@@ -5,6 +5,7 @@ import { PreUser, User } from '@src/model/user.model';
 import { CustomError } from '@src/model/error.model';
 import CryptoService from '@src/utils/crypto';
 import { sendMail } from '@src/utils/mail';
+import jwt from 'jsonwebtoken';
 
 /**
  * 사용자 정보가 올바른지 체크
@@ -103,6 +104,18 @@ export default class AuthService {
     async getAuthCodeList() {
         const result = await DBService.connection<User>(authSql.getUserList, {});
         return result;
+    }
+
+    async signIn(name: string, password: string) {
+        // 아이디 암호 체크
+        const result = await DBService.connection<User>(authSql.setUser, { name, password });
+        if (result.rowCount !== 1) return new CustomError('');
+
+        const user = result.data[0];
+
+        // 인증토큰 발급
+        // Access Token, Refresh token 발급
+        const sss = jwt.sign(user.info, '', { expiresIn: '7 days' });
     }
 }
 

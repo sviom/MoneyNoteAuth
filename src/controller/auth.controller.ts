@@ -47,8 +47,6 @@ export default class AuthController {
     async setUser(req: Request, res: Response) {
         try {
             const { message } = req.query as { message: string };
-
-            console.log('test');
             const info: PreUser = JSON.parse(CryptoService.decipher(message)) as PreUser;
 
             let user = new User();

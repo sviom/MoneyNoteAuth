@@ -38,9 +38,7 @@ class CryptoService {
         const decode = crypto.createDecipheriv('aes-256-cbc', key, iv);
         let decrypted = decode.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decode.final()]);
-        const decodeResult = decode.update(decrypted);
-
-        return decodeResult.toString();
+        return decrypted.toString();
     };
 }
 

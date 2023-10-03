@@ -53,8 +53,6 @@ export default class AuthService {
             if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
 
             const code = generateRandomCode(6);
-            const password = CryptoService.crypt(user.password);
-            user.password = password;
 
             // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
             const result = await DBService.connection<{ id: string }>(authSql.setPreUser, { authCode: code });
@@ -67,7 +65,6 @@ export default class AuthService {
 
             // 이메일 보내기
             const mail = `http://127.0.0.1:3011/api/auth/user?message=${CryptoService.cipher(JSON.stringify(preuser))}`;
-            console.log('email : ', mail);
 
             await sendMail('kanghanstar@gmail.com', mail);
 

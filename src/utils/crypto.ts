@@ -3,7 +3,7 @@ import { getVaultSecret } from './keyvault';
 
 class CryptoService {
     private static salt: string;
-    private static key: string;
+    static key: string;
 
     static async setKey() {
         CryptoService.key = await getVaultSecret('mnkey');

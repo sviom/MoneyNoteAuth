@@ -23,6 +23,25 @@ const authSql = {
         WHERE name = $name
             AND password = $password;
     `,
+    checkAccessToken: `
+        SELECT *
+        FROM [User]
+        WHERE accessToken = '';
+    `,
+    checkRefreshToken: `
+        SELECT
+            id,
+            name
+        FROM [User]
+        WHERE id = ''
+            AND refreshToken = $refreshToken;
+    `,
+    updateUserToken: `
+        UPDATE [User]
+        SET accessToken = $newAccessToken
+        WHERE id = ''
+            AND accessToken = $accessToken
+    `,
 };
 
 export default authSql;

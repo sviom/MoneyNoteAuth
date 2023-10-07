@@ -1,4 +1,9 @@
 const authSql = {
+    checkEmailDuplicate:`
+        SELECT *
+        FROM [User]
+        WHERE email = $emmail;
+    `,
     setPreUser: `
         INSERT INTO PreUser (authCode)
         OUTPUT inserted.id

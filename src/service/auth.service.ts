@@ -54,9 +54,12 @@ export default class AuthService {
             const validateResult = validate(user);
             if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
 
+            // 이메일 중복 검사
+            const duplicateResult = await DBService.connection<User>(authSql.checkEmailDuplicate, { email: user.email });
+            if (duplicateResult.rowCount > 1) return new CustomError('중복된 이메일이 있습니다.');
+
             const code = generateRandomCode(6);
 
-            // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
             const result = await DBService.connection<{ id: string }>(authSql.setPreUser, { authCode: code });
             const id = result.data[0].id;
 

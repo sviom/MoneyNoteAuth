@@ -11,6 +11,6 @@ class CustomError {
     setRawError(error: any) {
         this.error = error;
     }
-}
+}}
 
 export { CustomError };

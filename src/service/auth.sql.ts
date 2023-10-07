@@ -1,5 +1,5 @@
 const authSql = {
-    checkEmailDuplicate:`
+    checkEmailDuplicate: `
         SELECT *
         FROM [User]
         WHERE email = $emmail;
@@ -18,20 +18,22 @@ const authSql = {
         FROM PreUser
         WHERE authCode = $authCode;
     `,
-    getUserList: `
-        SELECT *
-        FROM [User];
-    `,
     signIn: `
         SELECT *
         FROM [User]        
         WHERE name = $name
             AND password = $password;
     `,
+    signInUpdateToken: `
+        UPDATE [User]
+        SET accessToken  = $accessToken,
+            refreshToken = $refreshToken
+        WHERE id = $id
+    `,
     checkAccessToken: `
         SELECT *
         FROM [User]
-        WHERE accessToken = '';
+        WHERE accessToken = $accessToken;
     `,
     checkRefreshToken: `
         SELECT

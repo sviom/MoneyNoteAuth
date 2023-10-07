@@ -7,27 +7,12 @@ export default class AuthController {
     public router: Router = express.Router();
 
     constructor() {
-        // this.router.post('/auth', this.getTestMessage);
-        this.router.get('/auth', this.getTestMessage);
-
         /** 인증 */
         this.router.post('/auth', this.setPreUser);
         /** 인증링크 클릭, 가입 절차 */
         this.router.get('/user', this.setUser);
         /** 로그인 */
         this.router.post('/signin', this.signin);
-    }
-
-    async getTestMessage(req: Request, res: Response) {
-        try {
-            const service = new AuthService();
-            const result = await service.getAuthCodeList();
-
-            res.status(200).json({ test: 'test message', result: result });
-        } catch (error) {
-            console.error(error);
-            res.status(500).end();
-        }
     }
 
     async setPreUser(req: Request, res: Response) {

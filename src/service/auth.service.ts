@@ -102,6 +102,8 @@ export default class AuthService {
             // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
             await DBService.connection<User>(authSql.setUser, user);
 
+            // 인증코드 발급
+
             return true;
         } catch (error) {
             return new CustomError({ message: errorCode.unexpected });

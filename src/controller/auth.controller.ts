@@ -1,8 +1,7 @@
-import AuthMiddleware from '@src/middleware/auth.middleware';
 import { PreUser, User } from '@src/model/user.model';
 import AuthService from '@src/service/auth.service';
 import CryptoService from '@src/utils/crypto';
-import express, { Router, Request, Response, NextFunction } from 'express';
+import express, { Router, Request, Response } from 'express';
 
 export default class AuthController {
     public router: Router = express.Router();
@@ -12,14 +11,6 @@ export default class AuthController {
         this.router.post('/auth', this.setPreUser);
         /** 인증링크 클릭, 가입 절차 */
         this.router.get('/user', this.setUser);
-
-        this.router.use(async (req: Request, res: Response, next: NextFunction) => {
-            const test = req.headers.cookie as { accessToken?: string; refreshToken?: string };
-            const middleware = new AuthMiddleware();
-            await middleware.signIn2(test.accessToken || '', test.refreshToken || '');
-            next();
-        });
-
         /** 로그인 */
         this.router.post('/signin', this.signin);
     }

@@ -48,7 +48,7 @@ export default class AuthMiddleware {
 
     async afterTokenExpire(accessToken: string, refreshToken: string) {
         const notExistResult = await DBService.connection<User>(authSql.checkRefreshToken, { refreshToken });
-        if (notExistResult.rowCount <= 0) return new CustomError({ message: '잘못된 접근' });
+        if (notExistResult.rowCount <= 0) return new CustomError({ message: errorCode.wrongAccess });
 
         try {
             const result: JwtPayload = jwt.verify(accessToken, CryptoService.key) as JwtPayload;
@@ -56,7 +56,7 @@ export default class AuthMiddleware {
                 const expiredDate = new Date(result.exp);
                 if (dayjs(expiredDate).add(7, 'day').isBefore(dayjs())) {
                     // 기존 토큰 모두 만료 시켜야함
-                    throw new CustomError({ message: '이상한 AccessToken' }); // access token이 다른데 Expired date이전이면 탈취당한 토큰으로 간주
+                    throw new CustomError({ message: errorCode.wrongAccess }); // access token이 다른데 Expired date이전이면 탈취당한 토큰으로 간주
                 }
             }
 
@@ -72,7 +72,7 @@ export default class AuthMiddleware {
             const zzz = error as any;
             if (zzz.name === 'TokenExpiredError') {
                 // Refresh token 마저도 만료 되었으므로, 재 로그인 대상안내
-                return new CustomError({ code: errorCode.test });
+                return new CustomError({ message: errorCode.wrongAccess });
             } else {
                 return;
             }

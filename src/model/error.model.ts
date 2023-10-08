@@ -14,8 +14,9 @@ class CustomError {
 }
 
 enum errorCode {
-    test = -1,
-    test2 = -1,
+    unexpected = '예상치 못한 오류가 발생했습니다.',
+    wrongAccess = '잘못된 접근입니다.',
+    notVerified = '인증되지 않은 코드입니다.',
 }
 
 export { CustomError, errorCode };

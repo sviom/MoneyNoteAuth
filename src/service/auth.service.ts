@@ -2,7 +2,7 @@ import DBService from '@src/database/db.connection';
 import authSql from './auth.sql';
 import { generateRandomCode } from '@src/utils/auth';
 import { PreUser, User } from '@src/model/user.model';
-import { CustomError } from '@src/model/error.model';
+import { CustomError, errorCode } from '@src/model/error.model';
 import CryptoService from '@src/utils/crypto';
 import { sendMail } from '@src/utils/mail';
 import jwt from 'jsonwebtoken';
@@ -51,7 +51,7 @@ export default class AuthService {
     async setPreUser(user: User): Promise<boolean | CustomError> {
         try {
             const validateResult = validate(user);
-            if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
+            if (!validateResult.success) return validateResult.error || new CustomError({ message: errorCode.unexpected });
 
             // 이메일 중복 검사
             const duplicateResult = await DBService.connection<User>(authSql.checkEmailDuplicate, { email: user.email });
@@ -74,8 +74,7 @@ export default class AuthService {
 
             return true;
         } catch (error) {
-            console.error(error);
-            return new CustomError('test', -1);
+            return new CustomError({ message: errorCode.unexpected });
         }
     }
 
@@ -88,14 +87,14 @@ export default class AuthService {
     async setUser(user: User, authCode: string): Promise<boolean | CustomError> {
         try {
             const message = '인증코드가 일치하지 않습니다. 코드를 다시 확인해주세요.';
-            if (!authCode) return new CustomError(message, -1);
+            if (!authCode) return new CustomError({ message });
 
             const validateResult = validate(user);
-            if (!validateResult.success) return validateResult.error || new CustomError('예상치 못한 이슈가 발생했습니다.', -1);
+            if (!validateResult.success) return validateResult.error || new CustomError({ message: errorCode.unexpected });
 
             // AuthCode가 일치하는지 확인
             const checkResult = await DBService.connection<PreUser>(authSql.getAuthCode, { authCode });
-            if (checkResult.rowCount < 1) return new CustomError(message, -1);
+            if (checkResult.rowCount < 1) return new CustomError({ message });
 
             user.password = CryptoService.crypt(user.password);
             user.authCode = authCode;
@@ -105,8 +104,7 @@ export default class AuthService {
 
             return true;
         } catch (error) {
-            console.error(error);
-            return new CustomError('test', -1);
+            return new CustomError({ message: errorCode.unexpected });
         }
     }
 

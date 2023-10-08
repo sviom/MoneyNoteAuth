@@ -1,6 +1,6 @@
 import DBService from '@src/database/db.connection';
 import { User } from '@src/model/user.model';
-import { CustomError } from '@src/model/error.model';
+import { CustomError, errorCode } from '@src/model/error.model';
 import authSql from '@src/service/auth.sql';
 import CryptoService from '@src/utils/crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
@@ -48,31 +48,34 @@ export default class AuthMiddleware {
 
     async afterTokenExpire(accessToken: string, refreshToken: string) {
         const notExistResult = await DBService.connection<User>(authSql.checkRefreshToken, { refreshToken });
-        if (notExistResult.rowCount <= 0) return new CustomError('잘못된 접근');
+        if (notExistResult.rowCount <= 0) return new CustomError({ message: '잘못된 접근' });
 
         try {
-            const result: JwtPayload = jwt.verify(refreshToken, CryptoService.key) as JwtPayload;
-            const expiredDate = new Date(result.exp);
-            if (dayjs(expiredDate).add(7, 'day').isBefore(dayjs())) {
-                // 기존 토큰 모두 만료 시켜야함
-                throw new CustomError('이상한 AccessToken'); // access token이 다른데 Expired date이전이면 탈취당한 토큰으로 간주
+            const result: JwtPayload = jwt.verify(accessToken, CryptoService.key) as JwtPayload;
+            if (result.exp) {
+                const expiredDate = new Date(result.exp);
+                if (dayjs(expiredDate).add(7, 'day').isBefore(dayjs())) {
+                    // 기존 토큰 모두 만료 시켜야함
+                    throw new CustomError({ message: '이상한 AccessToken' }); // access token이 다른데 Expired date이전이면 탈취당한 토큰으로 간주
+                }
             }
 
-            // access token이 만료되었으므로 Refresh token으로 재확인
-            const userResult = await DBService.connection<User>(authSql.checkRefreshToken, { id: '', refreshToken });
-            if (userResult.rowCount === 1) {
-                const user = userResult.data[0];
-
+            // Refresh token으로 재확인
+            if (notExistResult.rowCount === 1) {
+                const user = notExistResult.data[0];
                 // Refresh 토큰을 가진 사용자 존재, 다시 발급
                 const newAccessToken = jwt.sign({ name: user.name, email: user.email }, CryptoService.key, { expiresIn: '7 days' });
                 await DBService.connection(authSql.updateUserToken, { id: '', accessToken, newAccessToken: newAccessToken });
+                // 재로그인 대상
             }
         } catch (error) {
             const zzz = error as any;
             if (zzz.name === 'TokenExpiredError') {
-                // 재 로그인 대상
+                // Refresh token 마저도 만료 되었으므로, 재 로그인 대상안내
+                return new CustomError({ code: errorCode.test });
+            } else {
+                return;
             }
-            return;
         }
     }
 }

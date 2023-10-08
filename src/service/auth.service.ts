@@ -55,7 +55,7 @@ export default class AuthService {
 
             // 이메일 중복 검사
             const duplicateResult = await DBService.connection<User>(authSql.checkEmailDuplicate, { email: user.email });
-            if (duplicateResult.rowCount > 1) return new CustomError('중복된 이메일이 있습니다.');
+            if (duplicateResult.rowCount > 1) return new CustomError({ message: '중복된 이메일이 있습니다.' });
 
             const code = generateRandomCode(6);
 
@@ -118,7 +118,7 @@ export default class AuthService {
      */
     async signIn(name: string, password: string) {
         const result = await DBService.connection<User>(authSql.signIn, { name, password: CryptoService.crypt(password) }); // 아이디 암호 체크
-        if (result.rowCount !== 1) return new CustomError('일치하는 정보가 없습니다.');
+        if (result.rowCount !== 1) return new CustomError({ message: '이상한 AccessToken' });
 
         const user = result.data[0];
 

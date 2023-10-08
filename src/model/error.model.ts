@@ -3,14 +3,19 @@ class CustomError {
     message: string = '';
     error = null;
 
-    constructor(message: string = '', code: number = -1) {
-        this.statusCode = code;
-        this.message = message;
+    constructor(args?: { message?: string; code?: number }) {
+        this.statusCode = args?.code || -1;
+        this.message = args?.message || '';
     }
 
     setRawError(error: any) {
         this.error = error;
     }
-}}
+}
 
-export { CustomError };
+enum errorCode {
+    test = -1,
+    test2 = -1,
+}
+
+export { CustomError, errorCode };

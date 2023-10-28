@@ -73,7 +73,7 @@ export default class AuthService {
             await sendMail('kanghanstar@gmail.com', mail);
 
             return true;
-        } catch (error) {
+        } catch (error) {            
             return new CustomError({ message: errorCode.unexpected });
         }
     }

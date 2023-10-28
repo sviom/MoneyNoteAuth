@@ -2,7 +2,7 @@ const authSql = {
     checkEmailDuplicate: `
         SELECT *
         FROM [User]
-        WHERE email = $emmail;
+        WHERE email = $email;
     `,
     setPreUser: `
         INSERT INTO PreUser (authCode)

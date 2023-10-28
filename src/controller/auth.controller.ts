@@ -27,7 +27,8 @@ export default class AuthController {
             const service = new AuthService();
             const result = await service.setPreUser(user);
 
-            res.status(200).json({ test: 'test message', result: result });
+            if (typeof result === typeof Boolean) res.status(200).json({ test: 'test message', result: result });
+            else res.status(500).json({ test: 'test message', result: result });
         } catch (error) {
             console.error(error);
             res.status(500).end();

@@ -10,7 +10,7 @@ import CryptoService from './utils/crypto';
 import bodyParser from 'body-parser';
 
 const port = 3011;
-const allowList = ['http://localhost:5143'];
+const allowList = ['http://localhost:5173'];
 const corsOption: CorsOptions = {
     origin: allowList,
     maxAge: 20,

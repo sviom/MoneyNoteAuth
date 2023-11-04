@@ -1,6 +1,5 @@
-import { PreUser, User } from '@src/model/user.model';
+import { User } from '@src/model/user.model';
 import AuthService from '@src/service/auth.service';
-import CryptoService from '@src/utils/crypto';
 import express, { Router, Request, Response } from 'express';
 
 export default class AuthController {
@@ -10,7 +9,7 @@ export default class AuthController {
         /** 인증 */
         this.router.post('/auth', this.setPreUser);
         /** 인증링크 클릭, 가입 절차 */
-        this.router.get('/user', this.setUser);
+        this.router.post('/user', this.setUser);
         /** 로그인 */
         this.router.post('/signin', this.signin);
     }
@@ -37,14 +36,15 @@ export default class AuthController {
 
     async setUser(req: Request, res: Response) {
         try {
-            const { message } = req.query as { message: string };
-            const info: PreUser = JSON.parse(CryptoService.decipher(message)) as PreUser;
+            const { name, email, password, authCode } = req.body as { name: string; email: string; password: string; authCode: string };
 
-            let user = new User();
-            user = info.user || new User();
+            const user = new User();
+            user.name = name;
+            user.email = email;
+            user.password = password;
 
             const service = new AuthService();
-            const result = await service.setUser(user, info.authCode);
+            const result = await service.setUser(user, authCode);
 
             res.status(200).json({ test: 'test message', result: result });
         } catch (error) {

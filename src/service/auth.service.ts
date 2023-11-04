@@ -59,21 +59,21 @@ export default class AuthService {
 
             const code = generateRandomCode(6);
 
-            const result = await DBService.connection<{ id: string }>(authSql.setPreUser, { authCode: code });
-            const id = result.data[0].id;
+            await DBService.connection<{ id: string }>(authSql.setPreUser, { authCode: code });
+            // const id = result.data[0].id;
 
-            const preuser = new PreUser();
-            preuser.authCode = code;
-            preuser.id = id;
-            preuser.user = user;
+            // const preuser = new PreUser();
+            // preuser.authCode = code;
+            // preuser.id = id;
+            // preuser.user = user;
 
             // 이메일 보내기
-            const mail = `http://127.0.0.1:3011/api/auth/user?message=${CryptoService.cipher(JSON.stringify(preuser))}`;
+            // const mail = `http://127.0.0.1:3011/api/auth/user?message=${CryptoService.cipher(JSON.stringify(preuser))}`;
 
-            await sendMail('kanghanstar@gmail.com', mail);
+            await sendMail('kanghanstar@gmail.com', code);
 
             return true;
-        } catch (error) {            
+        } catch (error) {
             return new CustomError({ message: errorCode.unexpected });
         }
     }

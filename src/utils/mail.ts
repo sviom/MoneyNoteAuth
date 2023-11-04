@@ -14,7 +14,7 @@ const sendMail = async (address: string, content: string) => {
             from: 'kanghanstar@outlook.com', // Change to your verified sender
             subject: 'Sending with SendGrid is Fun',
             text: content,
-            html: `<strong>and easy to do anywhere, even with Node.js</strong><a href="${content}" >인증하기</a>`,
+            html: `<strong>and easy to do anywhere, even with Node.js</strong><a href="${content}" >인증하기 : ${content}</a>`,
         };
         const response = await sgMail.send(msg);
         console.log('response = ', response);

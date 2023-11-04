@@ -8,7 +8,7 @@ export default class AuthController {
     constructor() {
         /** 인증 */
         this.router.post('/auth', this.setPreUser);
-        /** 인증링크 클릭, 가입 절차 */
+        /** 인증코드입력과 더불은 회원 가입 절차 */
         this.router.post('/user', this.setUser);
         /** 로그인 */
         this.router.post('/signin', this.signin);

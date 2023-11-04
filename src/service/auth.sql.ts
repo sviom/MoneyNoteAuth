@@ -9,9 +9,13 @@ const authSql = {
         OUTPUT inserted.id
         VALUES ($authCode);
     `,
+    deletePreUser: `
+        DELETE PreUser
+        WHERE authCode = $authCode;
+    `,
     setUser: `
         INSERT INTO [User] (name, email, password, createdTime, updatedTime, isApproved, authCode)
-        VALUES ($name, $email, $password, GETDATE(), NULL, 0, $authCode);
+        VALUES ($name, $email, $password, GETDATE(), NULL, 1, $authCode);
     `,
     getAuthCode: `
         SELECT *

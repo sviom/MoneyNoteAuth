@@ -60,15 +60,6 @@ export default class AuthService {
             const code = generateRandomCode(6);
 
             await DBService.connection<{ id: string }>(authSql.setPreUser, { authCode: code });
-            // const id = result.data[0].id;
-
-            // const preuser = new PreUser();
-            // preuser.authCode = code;
-            // preuser.id = id;
-            // preuser.user = user;
-
-            // 이메일 보내기
-            // const mail = `http://127.0.0.1:3011/api/auth/user?message=${CryptoService.cipher(JSON.stringify(preuser))}`;
 
             await sendMail('kanghanstar@gmail.com', code);
 
@@ -80,9 +71,6 @@ export default class AuthService {
 
     /**
      * 링크 클릭을 통해 들어온 사용자 가입 절차
-     * @param user
-     * @param authCode
-     * @returns
      */
     async setUser(user: User, authCode: string): Promise<boolean | CustomError> {
         try {
@@ -99,10 +87,11 @@ export default class AuthService {
             user.password = CryptoService.crypt(user.password);
             user.authCode = authCode;
 
-            // 서버에 해당 이메일이 있는지 확인용 인증코드 저장
+            // 사용자 저장
             await DBService.connection<User>(authSql.setUser, user);
 
-            // 인증코드 발급
+            // PreUse에 있는 내용 제거
+            await DBService.connection<User>(authSql.deletePreUser, { authCode });
 
             return true;
         } catch (error) {
